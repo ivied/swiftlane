@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="dev.udev.swiftlane.models.Payload" />
+
+        <import type="dev.udev.swiftlane.models.State" />
+
+        <variable
+            name="resource"
+            type="Payload" />
+
+        <variable
+            name="callback"
+            type="dev.udev.swiftlane.network.services.RetryCallback" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        app:visibleGone="@{resource.data == null}"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/default_margin"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            app:visibleGone="@{resource.state == State.Pending}"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            android:id="@+id/retry"
+            android:onClick="@{() -> callback.retry()}"
+            app:visibleGone="@{resource.state == State.Error}" />
+
+        <TextView
+            android:id="@+id/error_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{resource.message ?? @string/unknown_error}"
+            app:visibleGone="@{resource.state == State.Error}" />
+    </LinearLayout>
+</layout>
